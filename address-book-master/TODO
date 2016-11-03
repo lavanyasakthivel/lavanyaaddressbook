@@ -40,3 +40,5 @@ Set the ContactList widget's selected item to the 1st item in the list when it's
 
 *DONE - ERROR HANDLING WORKS, BUT ISN'T ELEGANT*
 Re structure all error handling to work with new MVC architecture.
+
+Daily task can be updated
