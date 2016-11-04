@@ -188,6 +188,10 @@ ErrorInfo SQLiteDataSource::addContact(const Contact& c)
     sqlite3_bind_text(insertStatement.get(), 2, c.lastName.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(insertStatement.get(), 3, c.phoneNumber.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(insertStatement.get(), 4, c.address.c_str(), -1, SQLITE_STATIC);
+
+
+
+
     sqlite3_bind_text(insertStatement.get(), 5, c.email.c_str(), -1, SQLITE_STATIC);
 
     //execute SQL statement & check results

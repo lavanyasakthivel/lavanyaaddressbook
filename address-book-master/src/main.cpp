@@ -12,5 +12,6 @@ int main(int argc, char *argv[])
     AddressBookController myBook(dSrc);
     myBook.start();
     return app.exec();
+
 }
 

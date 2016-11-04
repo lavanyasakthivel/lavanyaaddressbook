@@ -22,6 +22,7 @@ QtAddressBookGUI::QtAddressBookGUI(AddressBookController &controller, AddressBoo
 {
     createWidgets();
     setMinimumSize(640,480);
+
 }
 
 QtAddressBookGUI::~QtAddressBookGUI()
@@ -41,9 +42,13 @@ void QtAddressBookGUI::createWidgets()
     list = new QtContactList(dataSource);
     list->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
+    setStyleSheet("background-color: gray;background-image: url(C:/Users/student/Desktop/images.jpg);");
     newContactButton = new QPushButton("New Contact");
+    newContactButton->setStyleSheet("background-color:red;color:red;font-size:25 pt;font-style:italic");
     editContactButton = new QPushButton("Edit");
+    editContactButton->setStyleSheet("background-color:red;color:red;font-size:25 pt;font-style:italic");
     deleteContactButton = new QPushButton("Delete");
+    deleteContactButton->setStyleSheet("background-color:red;color:red;font-size:25 pt;font-style:italic");
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(newContactButton);
@@ -135,8 +140,7 @@ void QtAddressBookGUI::editContact()
     Contact editingContact;
     ErrorInfo getContactErrorStatus = dataSource.getContact(idToEdit, editingContact);
     
-    QtErrorDialog *errDialog = new QtErrorDialog("", this);
-
+    QtErrorDialog *errDialog = new QtErrorDialog("",this);
     if(getContactErrorStatus.code != ERR_OK)
     {
         //The id of the Contact user wants to edit doesn't exist
