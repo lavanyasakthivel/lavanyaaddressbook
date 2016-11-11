@@ -36,6 +36,7 @@ class AddressBookModel
         virtual ErrorInfo updateContact(Contact::ContactId id, const Contact& c) = 0;
         virtual ErrorInfo deleteContact(Contact::ContactId id)=0;
         virtual ErrorInfo deleteAllContacts()=0;
+        virtual ErrorInfo findContacts(Contact::ContactId id,const Contact& c)=0;
 
         virtual ~AddressBookModel() {};
 

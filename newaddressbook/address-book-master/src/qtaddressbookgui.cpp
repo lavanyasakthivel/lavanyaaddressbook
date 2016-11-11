@@ -14,6 +14,7 @@
 #include "qtcontactdetailview.h"
 #include "qteditcontactdialog.h"
 #include "qterrordialog.h"
+#include "qtfindform.h"
 #include "contact.h"
 
 QtAddressBookGUI::QtAddressBookGUI(AddressBookController &controller, AddressBookModel &model,
@@ -40,17 +41,20 @@ void QtAddressBookGUI::createWidgets()
 
     list = new QtContactList(dataSource);
     list->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
+ setStyleSheet("background-color:gray;");
     newContactButton = new QPushButton("New Contact");
     editContactButton = new QPushButton("Edit");
     deleteContactButton = new QPushButton("Delete");
     findContactButton = new QPushButton("Find");
-
+    searchContactButton = new QPushButton("search");
+    searchContactField=new QLineEdit("enter the first name to search");
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(newContactButton);
     buttonLayout->addWidget(editContactButton);
     buttonLayout->addWidget(deleteContactButton);
     buttonLayout->addWidget(findContactButton);
+    buttonLayout->addWidget(searchContactField);
+    buttonLayout->addWidget(searchContactButton);
 
     QVBoxLayout *rightSideLayout = new QVBoxLayout();
     rightSideLayout->addWidget(detailView);
@@ -74,6 +78,10 @@ void QtAddressBookGUI::createWidgets()
 
     connect(editContactButton, SIGNAL(clicked()),
             this, SLOT(editContact()));
+    connect(findContactButton, SIGNAL(clicked()),
+            this, SLOT(findContact()));
+    connect(searchContactButton, SIGNAL(clicked()),
+            this, SLOT(searchContact()));
 
     //tell the sub-widgets to refresh their data from
     //
@@ -206,6 +214,58 @@ void QtAddressBookGUI::deleteContact()
         errDialog->exec();
         delete errDialog;
         return;
-    }
-}
+}}
+ void QtAddressBookGUI::findContact()
+    {        Contact::ContactId idTofind = list->getSelectedContactId();
 
+        Contact findingContact;
+        //getcontact->exec();
+        ErrorInfo getContactErrorStatus = dataSource.getContact(idTofind, findingContact);
+
+        QtErrorDialog *errDialog = new QtErrorDialog("", this);
+
+        if(getContactErrorStatus.code != ERR_OK)
+        {
+            //The id of the Contact user wants to edit doesn't exist
+            //Should never happen since they are selecting it from a list
+            //of existing id
+            //display error dialog
+            errDialog->setText(getContactErrorStatus.msg.c_str());
+            errDialog->exec();
+
+            //Qt only automagically deletes child objects when parent is destroyed
+            //If I don't delete this here more and more dialogs will build up everytime
+            //this function is called, only being destroyed when the parent window
+            //(i.e. the application) is terminated.
+            delete errDialog;
+            return;
+        }
+
+        Qtfindform *findDialog = new Qtfindform(findingContact, this);
+
+        while(findDialog->exec())
+        {
+            ErrorInfo findErrorStatus = appController.findContacts(3, findingContact);
+
+            if(findErrorStatus.code == ERR_OK)
+            {
+                break;
+            }
+
+            //display error dialog
+            errDialog->setText(findErrorStatus.msg.c_str());
+            errDialog->exec();
+        }
+
+        //see comment above about manually deleting dialogs after each run
+        delete errDialog;
+        delete findDialog;
+    }
+
+void QtAddressBookGUI::searchContact()
+{
+    std::string nameTosearch=searchContactField->text().toStdString();
+    Contact::ContactId idOfSearchedItem=list->searchList(nameTosearch);
+    detailView->clear();
+    detailView->displayContact(idOfSearchedItem);
+}

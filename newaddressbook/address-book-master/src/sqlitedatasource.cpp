@@ -14,7 +14,7 @@
 //Non Member Utility Functions
 
 
-   
+
 SQLiteDataSource::SQLiteDataSource(const std::string &filename, bool createDB):
                             database(filename,
                             (createDB ? (SQLITE_OPEN_READWRITE|SQLITE_OPEN_CREATE) :
@@ -126,6 +126,7 @@ ErrorInfo SQLiteDataSource::getContact(Contact::ContactId id, Contact& c)
 
     SQLiteStatementHandle queryStatement(sqlStr, database.get());
 
+
     //bind parameters to SQL statement
     sqlite3_bind_int(queryStatement.get(), 1, id);
 
@@ -157,6 +158,7 @@ ErrorInfo SQLiteDataSource::getAllContacts(Contact::ContactRecordSet &rs)
     if(stepResult != SQLITE_ROW)
     {
         return ErrorInfo(ERR_DATASOURCE_ERROR, "Could not retrieve contacts.");
+
     }
 
     Contact::ContactRecordSet rows;
@@ -269,7 +271,7 @@ ErrorInfo SQLiteDataSource::deleteContact(Contact::ContactId id)
 ErrorInfo SQLiteDataSource::deleteAllContacts()
 {
     //create sql prepared statement
-    std::string sqlStr = "DELETE FROM Contacts2;";
+    std::string sqlStr = "DELETE FROM Contacts2 WHERE id=?;";
     
     SQLiteStatementHandle deleteAllStatement(sqlStr, database.get()); 
 
@@ -286,3 +288,99 @@ ErrorInfo SQLiteDataSource::deleteAllContacts()
     return ErrorInfo(ERR_OK, "OK");
 }
 
+ErrorInfo SQLiteDataSource::findContacts(Contact::ContactId id, const Contact& c)
+{
+
+int stepResult1;
+//QMessageBox errormessage;
+
+    //create sql prepared statement
+    std::string sqlStr = "SELECT * FROM Contacts2 WHERE id=?;";
+
+    SQLiteStatementHandle queryStatement(sqlStr, database.get());
+
+    //bind parameters to SQL statement
+    sqlite3_bind_int(queryStatement.get(), 1, id);
+
+    //execute statement & check result
+     stepResult1 = sqlite3_step(queryStatement.get());
+
+    if(stepResult1 != SQLITE_ROW)
+    {
+        //return ErrorInfo(ERR_DATASOURCE_ERROR, "Could not retrieve contact.");
+        return ErrorInfo(ERR_DATASOURCE_ERROR,"NO LINK TO DB");
+       // errormessage.settext("NOT FOUND");
+        //errormessage.exec();
+    }
+
+    //package column values into Out parameter
+    //fillContactFromRow(queryStatement.get(), c1);
+
+    return ErrorInfo(ERR_OK, "OK");
+    //create sql prepared statement
+
+/*    std::string sqlStr = "SELECT * from Contacts2 where id=?; ;";
+
+    SQLiteStatementHandle selectStatement(sqlStr, database.get())*/;
+    //create sql prepared statement
+   /* std::string sqlStr = "SELECT * FROM Contacts2 WHERE id=?;";
+
+    SQLiteStatementHandle queryStatement(sqlStr, database.get());
+
+    //bind parameters to SQL statement
+    sqlite3_bind_int(queryStatement.get(), 1, id);
+
+    //execute statement & check result
+    int stepResult = sqlite3_step(queryStatement.get());
+
+    if(stepResult != SQLITE_ROW)
+    {
+        return ErrorInfo(ERR_DATASOURCE_ERROR, "Could not retrieve contact.");
+    }
+
+    //package column values into Out parameter
+    fillContactFromRow(queryStatement.get(), c);
+
+    return ErrorInfo(ERR_OK, "OK");*/
+
+    sqlite3_bind_text(queryStatement.get(), 1, c.firstName.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(queryStatement.get(), 2, c.lastName.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(queryStatement.get(), 3, c.phoneNumber.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(queryStatement.get(), 4, c.address.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(queryStatement.get(), 5, c.email.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(queryStatement.get(), 6, c.city.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(queryStatement.get(), 7, c.country.c_str(), -1, SQLITE_STATIC);
+   // sqlite3_bind_int(queryStatement.get(), 8, id);
+
+
+
+
+
+
+
+    //execute statement & check result
+    int stepResult = sqlite3_step(queryStatement.get());
+
+    if(stepResult != SQLITE_ROW)
+    {
+        return ErrorInfo(ERR_DATASOURCE_ERROR, "Could not retrieve contacts.");
+    }
+
+    Contact::ContactRecordSet rows;
+
+    while(stepResult == SQLITE_ROW)
+    {
+        Contact temp;
+
+        //package column values into Out parameter
+        fillContactFromRow(queryStatement.get(), temp);
+        rows.push_back(temp);
+
+        stepResult = sqlite3_step(queryStatement.get());
+    }
+
+    //rs = rows;
+    notifyViews();
+
+    return ErrorInfo(ERR_OK, "OK");
+}

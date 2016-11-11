@@ -25,11 +25,12 @@ class QtContactDetailView : public QGroupBox
 
     public:
         QtContactDetailView(AddressBookModel &model, QWidget *parent=0);
+        void displayContact(Contact::ContactId id);
 
         void clear();
 
     private slots:
-        void displayContact(Contact::ContactId id);
+        //void displayContact(Contact::ContactId id);
 
     private:
         AddressBookModel &dataSource;

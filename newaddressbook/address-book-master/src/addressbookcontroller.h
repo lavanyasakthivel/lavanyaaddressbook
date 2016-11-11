@@ -28,6 +28,7 @@ class AddressBookController
         ErrorInfo submitContact(const Contact &c);
         ErrorInfo deleteContact(const Contact::ContactId id);
         ErrorInfo editContact(const Contact::ContactId id, const Contact &c);
+        ErrorInfo findContacts(const Contact::ContactId id, const Contact &c);
 
         void start();
 

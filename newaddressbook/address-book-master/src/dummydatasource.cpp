@@ -205,3 +205,21 @@ bool DummyDataSource::idExists(Contact::ContactId id, Contact::ContactRecordSet:
     pos = it;
     return false;
 }
+ErrorInfo DummyDataSource::findContacts(Contact::ContactId id, const Contact& c)
+{
+    Contact::ContactRecordSet::iterator it;
+
+    if(idExists(id, it))
+    {
+        *it = c;
+
+        //Data has changed
+        notifyViews();
+        return ErrorInfo(ERR_OK, "OK");
+    }
+    else
+    {
+        //no item with that id
+        return ErrorInfo(ERR_CONTACT_NOT_FOUND, "Contact id does not exist!");
+    }
+}

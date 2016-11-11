@@ -28,7 +28,8 @@ HEADERS += src/addressbookcontroller.h \
            src/qteditcontactdialog.h \
            src/qterrordialog.h \
            src/sqlitedatasource.h \
-           src/sqliteutils.h\src/sqlite3.h
+           src/sqliteutils.h\src/sqlite3.h \
+    src/qtfindform.h
 SOURCES += src/addressbookcontroller.cpp \
            src/contact.cpp \
            src/dummydatasource.cpp \
@@ -42,4 +43,5 @@ SOURCES += src/addressbookcontroller.cpp \
            src/qterrordialog.cpp \
            src/sqlitedatasource.cpp \
            src/sqliteutils.cpp\
-            src/sqlite3.c
+            src/sqlite3.c \
+    src/qtfindform.cpp

@@ -33,6 +33,14 @@ ErrorInfo AddressBookController::submitContact(const Contact &c)
 
     return dataStore.addContact(c);
     
+    if(!c.isValidToAdd()|| !c.isValidPhone())
+        {
+            return ErrorInfo(ERR_CONTACT_NOT_VALID,
+                            "Invalid Contact. Make sure all required fields are filled.");
+        }
+
+        //return dataStore.addContact(c);
+
 }
 
 ErrorInfo AddressBookController::deleteContact(const Contact::ContactId id)
@@ -50,6 +58,17 @@ ErrorInfo AddressBookController::editContact(const Contact::ContactId id, const 
     }
 
     return dataStore.updateContact(id, c);
+
+}
+ErrorInfo AddressBookController::findContacts(const Contact::ContactId id, const Contact &c)
+{
+    if(!c.isValidToAdd())
+    {
+        return ErrorInfo(ERR_CONTACT_NOT_VALID,
+                "Invalid Contact. Make sure all required fields are filled.");
+    }
+
+    return dataStore.findContacts(id, c);
 
 }
 

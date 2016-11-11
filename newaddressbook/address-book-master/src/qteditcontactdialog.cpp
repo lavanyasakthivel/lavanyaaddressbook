@@ -46,7 +46,6 @@ void QtEditContactDialog::fillForm()
 
 
 }
-
 void QtEditContactDialog::accept()
 {
     contactToEdit.firstName = contactForm->firstNameField->text().toStdString();

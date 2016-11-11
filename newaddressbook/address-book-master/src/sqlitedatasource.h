@@ -31,9 +31,10 @@ class SQLiteDataSource : public AddressBookModel
         virtual ErrorInfo getContact(Contact::ContactId id, Contact& c);
         virtual ErrorInfo getAllContacts(Contact::ContactRecordSet &rs);
         virtual ErrorInfo addContact(const Contact& c);
-        virtual ErrorInfo updateContact(Contact::ContactId id, const Contact&);
+        virtual ErrorInfo updateContact(Contact::ContactId id, const Contact& );
         virtual ErrorInfo deleteContact(Contact::ContactId id);
         virtual ErrorInfo deleteAllContacts();
+        virtual ErrorInfo findContacts(Contact::ContactId id, const Contact& c);
   
     private:
         void createTable();

@@ -14,7 +14,8 @@ QtContactForm::QtContactForm(QWidget *parent) :
         cityField(new QLineEdit()),
         countryField(new QLineEdit())
 {
-    addRow("First Name<font background = ''color='red'>*</font>", firstNameField);
+
+    addRow("First Name<font color='red'>*</font>", firstNameField);
     addRow("Last Name<font color='red'>*</font>", lastNameField);
     addRow("Address", addressField);
     addRow("Phone Number<font color='red'>*</font>", phoneNumberField);
